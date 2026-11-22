@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>薪資實領與扣款快速試算</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 680px; margin: 40px auto; padding: 0 16px; line-height: 1.6; color: #1f2937; }
+    .box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    label { display: block; font-weight: 600; margin-top: 12px; }
+    input { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+    button { margin-top: 16px; padding: 12px 20px; background: #111827; color: #fff; border: 0; border-radius: 8px; font-size: 16px; cursor: pointer; }
+    .result-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e5e7eb; }
+    .total { font-size: 20px; font-weight: 700; color: #059669; border-bottom: 0; }
+    .ad-slot { border: 1px dashed #9ca3af; padding: 16px; text-align: center; color: #6b7280; border-radius: 8px; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h1>薪資實領快速試算</h1>
+  <p>輸入月薪與預估扣款，快速估算每月大約實領金額（試算參考用）。</p>
+
+  <div class="box">
+    <label for="salary">月薪總額（元）</label>
+    <input id="salary" type="number" value="45000" min="0" step="500" />
+
+    <label for="laborRate">個人勞保自付估算比例（%）</label>
+    <input id="laborRate" type="number" value="2.5" min="0" max="30" step="0.1" />
+
+    <label for="healthRate">個人健保自付估算比例（%）</label>
+    <input id="healthRate" type="number" value="1.6" min="0" max="30" step="0.1" />
+
+    <label for="otherDeduct">其他固定扣款（伙食／福利金／代扣，元）</label>
+    <input id="otherDeduct" type="number" value="0" min="0" step="100" />
+
+    <button onclick="calc()">立即試算</button>
+  </div>
+
+  <div class="ad-slot">廣告版位預留區（通過廣告審核後替換為廣告碼）</div>
+
+  <div class="box" id="outputBox">
+    <div class="result-row"><span>月薪總額</span><strong id="rGross">$45,000</strong></div>
+    <div class="result-row"><span>預估勞保自付</span><span id="rLabor">-$1,125</span></div>
+    <div class="result-row"><span>預估健保自付</span><span id="rHealth">-$720</span></div>
+    <div class="result-row"><span>其他固定扣款</span><span id="rOther">-$0</span></div>
+    <div class="result-row total"><span>預估實領金額</span><span id="rNet">$43,155</span></div>
+  </div>
+
+  <h2>常見扣款說明</h2>
+  <p>實際扣款會依投保級距表、公司福利制度及當月出勤狀況而略有差異。本工具僅供日常快速估算與對帳參考。</p>
+
+  <script>
+    function fmt(n) {
+      return "$" + Math.round(n).toLocaleString("en-US");
+    }
+    function calc() {
+      const gross = Number(document.getElementById("salary").value) || 0;
+      const labor = gross * ((Number(document.getElementById("laborRate").value) || 0) / 100);
+      const health = gross * ((Number(document.getElementById("healthRate").value) || 0) / 100);
+      const other = Number(document.getElementById("otherDeduct").value) || 0;
+      const net = gross - labor - health - other;
+
+      document.getElementById("rGross").textContent = fmt(gross);
+      document.getElementById("rLabor").textContent = "-" + fmt(labor);
+      document.getElementById("rHealth").textContent = "-" + fmt(health);
+      document.getElementById("rOther").textContent = "-" + fmt(other);
+      document.getElementById("rNet").textContent = fmt(net);
+    }
+  </script>
+</body>
+</html>
